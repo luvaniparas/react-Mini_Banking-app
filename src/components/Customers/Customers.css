@@ -1,0 +1,30 @@
+.c-pagination {
+    display: flex;
+    justify-content: center;
+
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.header{
+    display: flex;
+    justify-content: center;
+    margin-top: 1em;
+}
+
+.c-table{
+    margin-top: 1em;
+}
+
+.c-addCustomer{
+    float:right;
+    margin-right:2em;
+    margin-bottom: 2em;
+}
+
+.c-loader{
+    display: flex;
+    justify-content: center;
+}
