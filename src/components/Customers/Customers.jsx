@@ -127,9 +127,9 @@ function Customers() {
 
   if(loading === true){
     return(
-        <>
-            <ReactLoading className="c-loader"  type="spinningBubbles" color="#0000FF" height={100} width={120}/>
-        </>
+        <div className="spinner">
+            <ReactLoading className="spinner" type="spinningBubbles" color="#0000FF" height={100} width={120}/>
+        </div>
     )
   }
   else{
@@ -165,7 +165,7 @@ function Customers() {
 
                     <td><Button variant="danger" onClick= {()=> {deleteCustomer(customer.id,customer.firstName,customer.lastName)}}>Delete</Button></td>
                     {/* <td>
-                        <ToggleButton type="radio" value={isActive} > </ToggleButton>
+                        <ToggleButton id={customer.id} value={customer.id} type='radio' size='lg' name={customer.id} onChange={() =>{setIsActive(true)}}> </ToggleButton>
                     </td> */}
                   </tr>
                  )

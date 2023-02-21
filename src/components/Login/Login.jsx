@@ -38,7 +38,7 @@ function Login() {
     if(userData.roleName === userRoles.ADMIN){
       navigate(`/adminDashboard/${userData.username}`);
     }else if(userData.roleName === userRoles.CUSTOMER){
-      navigate(`/navbar/userDashboard/${userData.username}`);
+      navigate(`/userDashboard/${userData.username}`);
     }else{
       alert("Bad User");
     }

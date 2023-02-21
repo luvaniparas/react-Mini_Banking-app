@@ -24,7 +24,7 @@
     margin-bottom: 2em;
 }
 
-.c-loader{
+.spinner{
     display: flex;
     justify-content: center;
 }
