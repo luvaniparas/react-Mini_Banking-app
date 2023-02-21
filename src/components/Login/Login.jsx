@@ -6,6 +6,8 @@ import Form from 'react-bootstrap/Form';
 import React,{useState} from 'react';
 import { useNavigate } from "react-router-dom";
 
+import './Login.css';
+
 function Login() {
 
   const navigate = useNavigate();
@@ -46,21 +48,24 @@ function Login() {
 
   return (
     <>
+    <div className="form">
     <Form onSubmit={login}>
       <Form.Group className="mb-3" controlId="formBasicEmail">
         <Form.Label>Email address</Form.Label>
-        <Form.Control type="email" placeholder="Enter email" value={username}/>
+        <Form.Control type="email" placeholder="Enter email" value={username} onChange={(e) => {setUsername(e.target.value)}}/>
       </Form.Group>
 
       <Form.Group className="mb-3" controlId="formBasicPassword">
         <Form.Label>Password</Form.Label>
-        <Form.Control type="password" placeholder="Password" value={password}/>
+        <Form.Control type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)}/>
       </Form.Group>
 
       <Button variant="primary" type="submit">
         Submit
       </Button>
     </Form>
+    </div>
+    
     </>
   );
 }

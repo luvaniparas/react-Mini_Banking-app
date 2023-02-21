@@ -2,7 +2,6 @@ import React,{useEffect, useState} from 'react';
 import axios from 'axios';
 
 import Table from 'react-bootstrap/Table';
-import Pagination from 'react-bootstrap/Pagination';
 import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
