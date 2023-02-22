@@ -1,3 +1,18 @@
+// {
+//     "firstName": "shailesh",
+//     "lastName": "b",
+//     "email": "shailesh@sbi.com",
+//     "balance": 8200,
+//     "accounts": [],
+//     "id": "e45b93a3-39a5-4492-91d5-1513cce6d09e",
+//     "credential": {
+//         "id": "e45b93a3-39a5-4492-91d5-1513cce6d09e",
+//         "username": "shailesh@sbi.com",
+//         "password": null,
+//         "roleName": "Customer",
+//         "isActive": true
+//     }
+// }
 import React,{useEffect, useState} from 'react';
 import axios from 'axios';
 
@@ -8,7 +23,6 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import ReactLoading from "react-loading";
-import ToggleButton from 'react-bootstrap/ToggleButton'
 
 import './Customers.css'
 
@@ -28,14 +42,14 @@ function Customers() {
   const [password,setPassword] = useState("");
   const [balance,setBalance] = useState(0);
   const [showPassword,setShowPassword] = useState(true);
-  const [isActive,setIsActive] = useState(false);
+  const [showCustomerAccount, setShowCustomerAccount] = useState(false);
+  const [accountsOfCustomer,setAccountsOfCustomer] = useState([]);
 
   const pagination = {
     PREVIOUS: "previous",
     NEXT: "next"
   }
   const PAGE_SIZE = 5;
-  let totalCount;
 
   const handleFormClose = () => setShow(false);
   const handleFormShow = () => setShow(true);
@@ -46,7 +60,7 @@ function Customers() {
       const response = await axios.get(`http://localhost:5000/api/v1/bank-app/customers?limit=${PAGE_SIZE}&offset=${page * PAGE_SIZE}`);
 
       //[To-Do] :: pagination size
-      totalCount = response.headers['x-total-count'];
+      // let totalCount = response.headers['x-total-count'];
 
       setCustomers(response.data);
       setLoading(false);
@@ -100,11 +114,13 @@ function Customers() {
     }
   }
 
-  async function deleteCustomer(id,firstName,lastName) {
+  // id,firstName,lastName
+  async function deleteCustomer(data) {
+    console.log(data);
     try {
       // await axios.delete(`http://localhost:5000/api/v1/bank-app/customers/${id}}`);
 
-      alert("Customer ",firstName ," ", lastName ," Deleted !");
+      // alert("Customer ",firstName ," ", lastName ," Deleted !");
     } catch (error) {
       console.log("Error In deleting the Customers ",error);
     }
@@ -123,6 +139,23 @@ function Customers() {
   function openCustomer(){
     handleFormShow();
     setShowPassword(true);
+  }
+
+  async function fetchAccountsOfCustomer(customerID){
+    try {
+        let res = await axios.get(`http://localhost:5000/api/v1/bank-app/accounts`,{
+          params: {customerID}
+        });
+
+        if(res.data.length){
+          setAccountsOfCustomer(res.data);
+          setShowCustomerAccount(true);
+        }
+
+      } catch (error) {
+        setShowCustomerAccount(false);
+        console.log("Error In getting the banks for the customer :: ",error);
+      }
   }
 
   if(loading === true){
@@ -150,6 +183,7 @@ function Customers() {
                 <th>Balance</th>
                 <th>Update</th>
                 <th>Delete</th>
+                <th>Accounts</th>
               </tr>
             </thead>
 
@@ -163,10 +197,17 @@ function Customers() {
                     <td>{customer.balance}</td>
                     <td><Button variant="warning" onClick= {()=> {updateCustomer(customer.id,customer.firstName,customer.lastName,customer.email)}}>Update</Button></td>
 
-                    <td><Button variant="danger" onClick= {()=> {deleteCustomer(customer.id,customer.firstName,customer.lastName)}}>Delete</Button></td>
-                    {/* <td>
-                        <ToggleButton id={customer.id} value={customer.id} type='radio' size='lg' name={customer.id} onChange={() =>{setIsActive(true)}}> </ToggleButton>
-                    </td> */}
+                    {/* <td><Button variant="danger" onClick= {()=> {deleteCustomer(customer.id,customer.firstName,customer.lastName)}}>Delete</Button></td> */}
+                    {/* checked="" value="" */}
+                    <td>
+                      <Form.Check
+                        type="switch"
+                        id="custom-switch"
+                        onChange={(e)=> {deleteCustomer(e.target.value)}}
+                      />
+                    </td>
+
+                    <td><Button variant="secondary" onClick={() => { fetchAccountsOfCustomer(customer.id) }}>Accounts</Button></td>
                   </tr>
                  )
               )}
@@ -178,11 +219,12 @@ function Customers() {
               <Pagination.Next onClick = {() => {setPagination(pagination.NEXT)} }/>
           </Pagination>
 
+        {/* customer Form */}
         <Modal show={show} onHide={resetForm}>
           <Modal.Header closeButton>
             <Modal.Title>New Customer</Modal.Title>
           </Modal.Header>
-  
+
           <Modal.Body>
             <Form>
   
@@ -228,7 +270,7 @@ function Customers() {
 
             </Form>
           </Modal.Body>
-  
+
           <Modal.Footer>
             <Button variant="secondary" onClick={resetForm}>
               Close
@@ -238,6 +280,21 @@ function Customers() {
               Save
             </Button>
           </Modal.Footer>
+        </Modal>
+
+        {/* {customer accounts} */}
+        <Modal show={showCustomerAccount} onHide={()=>{setShowCustomerAccount(false)}}>
+          <Modal.Header closeButton>
+            <Modal.Title>Customer Accounts</Modal.Title>
+          </Modal.Header>
+
+          <Modal.Body>
+          {accountsOfCustomer.map((account) =>
+                (
+                  <div> <span>{account.accountName}</span>  <span>{account.balance}</span> </div>
+                )
+              )}
+          </Modal.Body>
         </Modal>
       </>
     )

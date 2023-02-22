@@ -1,3 +1,8 @@
+// {
+//   "fullName": "HDFC bank",
+//   "abbreviation": "HDFC",
+//   "id": "0851c433-f43c-4d78-ad83-9143d566672f"
+// }
 import React,{useEffect, useState} from 'react';
 import axios from 'axios';
 
@@ -22,6 +27,7 @@ function Banks() {
 
   const [show, setShow] = useState(false);
   const [name,setName] = useState("");
+  const [abbreviation,setAbbreviation] = useState("");
 
   const handleFormClose = () => setShow(false);
   const handleFormShow = () => setShow(true);
@@ -29,14 +35,7 @@ function Banks() {
   async function getBanks() {
     setLoading(true);
     try {
-      const response = await axios.get(`http://localhost:5000/api/v1/bank-app/accounts/`);
-    //   {
-    //     "id": "093df91a-d8f4-4c44-b4e7-ce05d9519c25",
-    //     "accountName": "shailesh hdfc bank",
-    //     "bankID": "0851c433-f43c-4d78-ad83-9143d566672f",
-    //     "customerID": "e45b93a3-39a5-4492-91d5-1513cce6d09e",
-    //     "balance": 5800
-    // }
+      const response = await axios.get(`http://localhost:5000/api/v1/bank-app/banks/`);
 
       setBanks(response.data);
       setLoading(false);
@@ -50,9 +49,9 @@ function Banks() {
     e.preventDefault();
 
     try {
-      // await axios.post(`http://localhost:5000/api/v1/bank-app/customers`,{
-      //   firstName,lastName,email,password,balance
-      // });
+      await axios.post(`http://localhost:5000/api/v1/bank-app/banks`,{
+        params:{fullName: name,abbreviation: abbreviation}
+      });
 
       handleFormClose();
       alert(`Successfully Saved`);
@@ -61,13 +60,16 @@ function Banks() {
     }
   }
 
-  async function updateBanks(bankId,name) {
+  async function updateBanks(bank) {
     handleFormShow();
 
     try {
-      setName(name);
+      setName(bank.fullName);
+      setAbbreviation(bank.abbreviation);
 
-      // await axios.put(`http://localhost:5000/api/v1/bank-app/accounts/${bankId}`,{});
+      await axios.put(`http://localhost:5000/api/v1/bank-app/banks`,{
+        params:{banksID : bank.id}
+      });
 
       console.log(`Bank Updated`);
     } catch (error) {
@@ -75,9 +77,11 @@ function Banks() {
     }
   }
 
-  async function deleteBanks() {
+  async function deleteBanks(id) {
     try {
-      // await axios.delete(`http://localhost:5000/api/v1/bank-app/customers/${id}}`);
+      await axios.delete(`http://localhost:5000/api/v1/bank-app/banks}`,{
+        params:{bankID : id}
+      });
 
       alert(`Bank Deleted !`);
     } catch (error) {
@@ -111,7 +115,7 @@ function Banks() {
             <thead>
               <tr>
                 <th>Name</th>
-                <th>Balance</th>
+                <th>Abbreviation</th>
                 <th>Update</th>
                 <th>Delete</th>
               </tr>
@@ -121,10 +125,10 @@ function Banks() {
               {banks.map(bank =>
                 (
                   <tr>
-                    <td>{bank.accountName}</td>
-                    <td>{bank.balance}</td>
-                    <td><Button variant="warning" onClick= {()=> {updateBanks(bank.bankID,bank.accountName)}}>Update</Button></td>
-                    <td><Button variant="danger" onClick= {()=> {deleteBanks()}}>Delete</Button></td>
+                    <td>{bank.fullName}</td>
+                    <td>{bank.abbreviation}</td>
+                    <td><Button variant="warning" onClick= {()=> {updateBanks(bank)}}>Update</Button></td>
+                    <td><Button variant="danger" onClick= {()=> {deleteBanks(bank.id)}}>Delete</Button></td>
                   </tr>
                  )
               )}
@@ -147,8 +151,16 @@ function Banks() {
                   onChange={(e) => setName(e.target.value) }
                   value={name}
                 />
-              </Form.Group>
+                </Form.Group>
 
+              <Form.Group className="mb-3">
+                <Form.Control
+                  type="text"
+                  placeholder="Enter Bank Abbreviation here"
+                  onChange={(e) => setAbbreviation(e.target.value) }
+                  value={abbreviation}
+                />
+              </Form.Group>
             </Form>
           </Modal.Body>
 
