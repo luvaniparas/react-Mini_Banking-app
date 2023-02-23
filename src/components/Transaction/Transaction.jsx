@@ -230,7 +230,7 @@ function Transaction(props) {
     async function getAccountTransactions(){
         setTransactions(data);
            try {
-        const response = await axios.post(`http://localhost:5000/api/v1/bank-app/accounts/${selectedAccount.id}/?limit=${limit},offset=${offset}`);
+        const response = await axios.get(`http://localhost:5000/api/v1/bank-app/accounts/${selectedAccount.id}/transactions?limit=${limit}&offset=${offset}`);
 
         setTransactions(response.data);
        } catch (error) {

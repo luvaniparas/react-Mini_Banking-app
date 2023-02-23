@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React,{useEffect, useState} from 'react'
 import ReactLoading from "react-loading";
+import { useNavigate } from "react-router-dom";
 
 import Badge from 'react-bootstrap/Badge';
 import Button from 'react-bootstrap/Button';
@@ -12,6 +13,7 @@ import Transaction from '../Transaction/Transaction';
 
 function Account(props) {
 
+  const navigate = useNavigate();
     const id = props.id;
 
     const [loading,setLoading] = useState(false);
@@ -43,9 +45,12 @@ function Account(props) {
     async function depositIntoAccount(){
         try {
             await axios.post(`http://localhost:5000/api/v1/bank-app/accounts/${selectedAccount.id}/deposit`,{
-                data : {amount:amount, bankID: selectedAccount.bankID}
+              amount:amount, bankID: selectedAccount.bankID
             });
+            setShowTransactionModel(false);
             alert(`Amount Deposited Successfully!`);
+
+            await getAccounts();
         } catch (error) {
             console.log("Error In Deposit to Accounts ",error);
         }
@@ -54,9 +59,12 @@ function Account(props) {
     async function withdrawIntoAccount(){
         try {
             await axios.post(`http://localhost:5000/api/v1/bank-app/accounts/${selectedAccount.id}/withdraw`,{
-                data : {amount:amount, bankID: selectedAccount.bankID}
+                amount:amount, bankID: selectedAccount.bankID
             });
+            setShowTransactionModel(false);
             alert(`Amount Withdraw Successfully!`);
+
+            await getAccounts();
         } catch (error) {
             console.log("Error In Withdraw to Accounts ",error);
         }
